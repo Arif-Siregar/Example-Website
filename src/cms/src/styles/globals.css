@@ -1,0 +1,74 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.calendar-todo-list {
+    text-align: left;
+    padding: 0;
+    list-style: none;
+  }
+  
+  .calendar-todo-list li {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  
+  .calendar-todo-item-badge {
+    vertical-align: top;
+    margin-top: 8px;
+    width: 6px;
+    height: 6px;
+  }  
+  
+  .box {
+    /* width: calc(25% - 20px); 25% width with some spacing */
+    margin: 10px;
+    box-sizing: border-box;
+  }
+
+  
+
+.calendar-todo-list-li-width{
+  width: 100px;
+  /* flex-basis: calc(100% / 3); */
+}
+
+.calendar-todo-list-li-3rd{
+  flex-basis: calc(100% / 3);
+}
+.calendar-todo-list-li-3rd > div{
+  width: 60px;
+}
+.calendar-todo-list > li:nth-child(3) {
+  flex-basis: 50%;
+}
+
+.calendar-todo-item-badge {
+  vertical-align: top;
+  margin-top: 8px;
+  width: 6px;
+  height: 6px;
+}  
+
+.rs-calendar-table-cell-content{
+  height: 60px;
+}
+
+
+.legend { list-style: none; }
+.legend li { float: left; margin-right: 10px; }
+.legend span { border: 1px solid #ccc; float: left; width: 12px; height: 12px; margin: 2px; }
+/* your colors */
+.legend .general { background-color: red; }
+.legend .recycle { background-color: yellow; }
+.legend .green { background-color: green; }
+.legend .food { background-color: green; }
+.legend .fogo { background-color: green; }
+.legend .glass { background-color: purple; }
+.legend .special { background-color: orange; }
+
+
+.rs-calendar{
+  width: 100% !important;
+}

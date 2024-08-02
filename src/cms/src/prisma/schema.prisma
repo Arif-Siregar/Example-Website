@@ -1,0 +1,168 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Council {
+  id                 Int               @id @default(autoincrement())
+  name               String
+  isLiscencing       Boolean?          @default(false)
+  councilImage       String?
+  showBinDayCalendar Boolean?          @default(false)
+  bins               Bin[]
+  bincollectdates    BinCollectDates[]
+  communities        Community[]
+  methods            Method[]
+  notifications      Notifications[]
+  suburbs            Suburb[]
+  users              User[]
+}
+
+model Suburb {
+  postcode  String
+  name      String
+  councilId Int
+  id        Int     @id @default(autoincrement())
+  council   Council @relation(fields: [councilId], references: [id])
+}
+
+model User {
+  id        Int       @id @default(autoincrement())
+  email     String    @map("userName")
+  councilId Int?
+  role      UserRole?
+  authId    String
+  council   Council?  @relation(fields: [councilId], references: [id])
+}
+
+model Bin {
+  id        Int      @id @default(autoincrement())
+  colorCode String
+  type      String
+  image     String?
+  can       String
+  cannot    String
+  councilId Int
+  bintypeId Int?
+  BinType   BinType? @relation(fields: [bintypeId], references: [bintypeid])
+  council   Council  @relation(fields: [councilId], references: [id])
+  methods   Method[]
+}
+
+model Method {
+  id        Int     @id @default(autoincrement())
+  councilId Int
+  itemId    Int
+  method    String?
+  binId     Int?
+  note      String?
+  address   String?
+  bin       Bin?    @relation(fields: [binId], references: [id])
+  council   Council @relation(fields: [councilId], references: [id])
+  item      Item    @relation(fields: [itemId], references: [id])
+}
+
+model Item {
+  id                      Int                      @id @default(autoincrement())
+  name                    String
+  subCategoryId           Int?
+  code                    String?
+  image                   String?
+  itemDBImg               String?
+  Community_item_mappings Community_item_mapping[]
+  subCategory             SubCategory?             @relation(fields: [subCategoryId], references: [id])
+  methods                 Method[]
+}
+
+model SubCategory {
+  id                Int             @id @default(autoincrement())
+  name              String
+  primaryMaterialId Int
+  code              String?         @unique
+  items             Item[]
+  PrimaryMaterial   PrimaryMaterial @relation(fields: [primaryMaterialId], references: [id])
+}
+
+model PrimaryMaterial {
+  id            Int           @id @default(autoincrement())
+  name          String
+  code          String?       @unique
+  subCategories SubCategory[]
+}
+
+model BinType {
+  bintypeid       Int               @id @default(autoincrement())
+  binType         String
+  bins            Bin[]
+  bincollectdates BinCollectDates[]
+}
+
+model Communitytype {
+  communitytypeId                  Int                               @id @default(autoincrement())
+  name                             String
+  Community_communitytype_mappings Community_communitytype_mapping[]
+}
+
+model Community {
+  communityId                      Int                               @id @default(autoincrement())
+  councilId                        Int
+  name                             String
+  link                             String?
+  location                         String
+  frequency                        String?
+  method                           String
+  notes                            String?
+  council                          Council                           @relation(fields: [councilId], references: [id])
+  Community_communitytype_mappings Community_communitytype_mapping[]
+  Community_item_mappings          Community_item_mapping[]
+}
+
+model Community_communitytype_mapping {
+  communityId     Int
+  communitytypeId Int
+  community       Community     @relation(fields: [communityId], references: [communityId])
+  communitytype   Communitytype @relation(fields: [communitytypeId], references: [communitytypeId])
+
+  @@id([communityId, communitytypeId])
+}
+
+model Community_item_mapping {
+  communityId Int
+  itemId      Int
+  community   Community @relation(fields: [communityId], references: [communityId])
+  item        Item      @relation(fields: [itemId], references: [id])
+
+  @@id([communityId, itemId])
+}
+
+model Notifications {
+  notificationId Int      @id @default(autoincrement())
+  heading        String
+  message        String
+  link           String?
+  councilId      Int?
+  council        Council? @relation(fields: [councilId], references: [id])
+}
+
+model BinCollectDates {
+  id                 Int     @id @default(autoincrement())
+  councilId          Int
+  dayName            String
+  binType            Int
+  frequency          String
+  collectDate        String
+  collectMode        Int?
+  specialCollectNote String?
+  BinType            BinType @relation(fields: [binType], references: [bintypeid])
+  council            Council @relation(fields: [councilId], references: [id])
+}
+
+enum UserRole {
+  USER
+  ADMIN
+  SUPERADMIN
+}
